@@ -1,0 +1,16 @@
+[project]
+name = "my-email-agent"
+version = "0.1.0"
+description = "A simple retrieval augmented generation (RAG) system that lets you collect emails, upload documents, generate embeddings, and chat with GPT to extract useful information from your data."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "beautifulsoup4>=4.14.2",
+    "lxml>=6.0.2",
+    "numpy>=2.2.6",
+    "openai>=2.8.1",
+    "pypdf2>=3.0.1",
+    "python-dotenv>=1.2.1",
+    "pyyaml>=6.0.3",
+    "torch>=2.9.1",
+]
