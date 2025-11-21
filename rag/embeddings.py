@@ -15,13 +15,10 @@ class Embeddings:
     def generate_and_save_embeddings(self):
         """method to generate embeddings and save them using Openai model"""
         client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-
-        #loading the vault content
         print("Loading vault content..........")
         with open(self.config['vault_file'], 'r', encoding="utf-8") as file:
             vault_text = file.read().split("\n")
 
-        #generating embedings
         print("Genarating embeddings.....")
         embeddings = []
         for i, text in enumerate(vault_text):
