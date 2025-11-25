@@ -37,13 +37,30 @@ class LocalRAG:
         #check embeddings, generate embeddings if they are not found
         if not os.path.exists(self.config['embeddings_file']):
             raise FileNotFoundError("Embeddings file not found.Generating embeddings....")
+            self.generate_embeddings()
+
         #load the embeddings
         with open(self.config['embeddings_file']) as file:
             self.embeddings = json.load(file)
         #convert embeddings to tensor
         self.embeddings_tensor = torch.tensor(self.embeddings)
 
+    def generate_embeddings(self):
+        """generate embeddings for vault content"""
+        print("Generating embeddings......")
+        embeddings = []
+        for i, text in enumerate(self.vault_text):
+            reponse = self.client.embeddings.create(model="text-embedding-ada-002",input=text)
+            embeddings.append(reponse.data[0].embedding)
+            if (i + 1) % 10 == 0:
+                print(f"Processed {i+1} lines...")
+        #save the embeddings
+        with open(self.config['embeddings_file'],'w') as file:
+            json.dump(embeddings,file)
+        print("Embeddingd generated and saved successfully!")
     
+    
+            
         
 
         
