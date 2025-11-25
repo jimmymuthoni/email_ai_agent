@@ -114,6 +114,10 @@ class LocalRAG:
                 print("\nResponse:",response)
             except Exception as e:
                 print(f"An error occuted: {str(e)}")
+
+    if __name__ == "__main__":
+        main()
+    
             
     
 
