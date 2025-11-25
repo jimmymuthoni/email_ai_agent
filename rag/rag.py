@@ -101,6 +101,21 @@ class LocalRAG:
         )
         return response.choices[0].message.content
     
+    def main():
+        """entry point of the program"""
+        rag = LocalRAG()
+        print("Welcome to localRAG! Type 'quit' to exit.")
+        while True:
+            user_input = input("\nYour Question regarding the emails: ")
+            if user_input.lower() == "quit":
+                break
+            try:
+                response = rag.query(user_input)
+                print("\nResponse:",response)
+            except Exception as e:
+                print(f"An error occuted: {str(e)}")
+            
+    
 
 
             
