@@ -1,6 +1,7 @@
 import os
 import json
 from openai import OpenAI
+from typing import List
 import torch
 from torch import Tensor
 from dotenv import load_dotenv
@@ -59,7 +60,10 @@ class LocalRAG:
             json.dump(embeddings,file)
         print("Embeddingd generated and saved successfully!")
     
-    
+    def get_embedding(self,text:str)->List[float]:
+        """get embeddings using OpenAI model"""
+        response = self.client.embeddings.create(model="text-embedding-ada-002",input=text)
+        return response.data[0].embedding
             
         
 
