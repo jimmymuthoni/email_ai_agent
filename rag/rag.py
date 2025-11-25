@@ -1,5 +1,6 @@
 import os
 import json
+import numpy as np
 from openai import OpenAI
 from typing import List
 import torch
@@ -64,6 +65,24 @@ class LocalRAG:
         """get embeddings using OpenAI model"""
         response = self.client.embeddings.create(model="text-embedding-ada-002",input=text)
         return response.data[0].embedding
+    
+    def get_relevant_context(self,query:str)->str:
+        """perorming similarity search"""
+        query_embedding = self.get_embedding(query)
+        #find similarity
+        similarities = [
+            cosine_similarity(query_embedding,doc_embedding)
+            for doc_embedding in self.embeddings
+        ]
+        #top k most similar indicies
+        top_k = self.config['top_k']
+        top_indicies = np.argsort(similarities)[-top_k:][::-1]
+
+        #construct context from top_k most similar documents
+        context = "\n".join([self.vault_text[i] for i in top_indicies])
+        return context
+    
+    
             
         
 
