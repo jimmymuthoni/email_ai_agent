@@ -82,7 +82,27 @@ class LocalRAG:
         context = "\n".join([self.vault_text[i] for i in top_indicies])
         return context
     
+    def query(self,user_input:str)->str:
+        """method that user gives the query"""
+        context = self.get_relevant_context(user_input)
+
+        #message for the llm
+        messages = [
+            {"role":"system","context":self.config["system_message"]},
+            {"role":"user","context":f"context:\n{context}\n\nQuestion:{user_input}"},
+        ]
+        #getting reposnse
+        response = self.client.chat.completions.create(
+            model=self.config['openai']['model'],
+            messages=messages,
+            temperature = self.config['openai']['temperature'],
+            max_tokens = self.config['openai']['max_tokens'],
+
+        )
+        return response.choices[0].message.content
     
+
+
             
         
 
