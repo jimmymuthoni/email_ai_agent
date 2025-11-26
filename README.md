@@ -62,7 +62,3 @@ A simple retrieval augmented generation (RAG) system that lets you collect email
      ```bash
      python generate_embeddings.py
      ```
-
-## License
-
-This project is licensed under the MIT License.
