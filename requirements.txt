@@ -1,6 +1,6 @@
 openai
 torch
-PyPDF2
+pypdf
 pyyaml
 beautifulsoup4
 lxml
