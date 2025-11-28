@@ -40,6 +40,42 @@ def convert_pdf_to_text():
             print("PDF content appended to vault.txt with each chunk on a separate line.")
 
 
+def upload_txtfile():
+    """function to upload text file and appand its content to vault.txt"""
+    file_path = filedialog.askopenfilename(filetypes=[("Text Files", "*.txt")])
+    if file_path:
+        with open(file_path,'r',encoding="utf-8") as txt_file:
+            text = txt_file.read()
+            #normalize the white space ans clean up the sapce
+            text = re.sub(r's\+',' ',text).strip()
+            #split text into chunks by sentences, repecting a maximum chuck size
+            sentences = re.split(r'(?<=[.!?]) +',text)# split on spaces following sentence-ending punctuation
+            chunks = []
+            current_chunk = ""
+            for sentence in sentences:
+                 # Check if the current sentence plus the current chunk exceeds the limit
+                if len(sentence) + len(current_chunk) + 1 < 1000: # +1 for the space
+                     current_chunk += (sentence + " ").strip()
+                else:
+                    #when chunk exceed 1000 characters, store it and start a new one
+                    chunks.append(current_chunk)
+                    current_chunk = sentence + " "
+            if current_chunk:
+                chunks.append(current_chunk)
+            with open("vault_text", "a", encoding="utf-8") as vault_file:
+                for chunk in chunks:
+                    vault_file.write(chunk.strip() + "\n")
+
+            print("Text file contwnt appended to vault.text with each chunk on a separate line.")
+                
+            
+                     
+                     
+
+
+
+
+
 
 
             
