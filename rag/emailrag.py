@@ -60,4 +60,14 @@ def generate_embeddings(vault_content, client):
                 print(f"Error in generating embeddings: {str(e)}")
     return embeddings
 
+def save_embeddings(embeddings, embedding_file):
+    print(f"Saving embeddingd to '{embedding_file}'...")
+    try:
+        with open(embedding_file, 'w', encoding="utf-8") as file:
+            json.dump(embeddings,file)
+    except Exception as e:
+        print(f"Error in saving embeddings: {str(e)}")
+
+
+
 
