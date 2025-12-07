@@ -69,5 +69,26 @@ def save_embeddings(embeddings, embedding_file):
         print(f"Error in saving embeddings: {str(e)}")
 
 
+def get_relevant_context(rewritten_input,vault_embedding,vault_content,top_k,client):
+    """this function retrieve relevant context depending with the user query"""
+    print("Retrieing relevant context...")
+    if vault_embedding.nelement() == 0:
+        return []
+    try:
+        response = client.embeddings.create(
+           model="text-embedding-ada-002", input=rewritten_input 
+        )
+        imput_embedding = response.data[0].embedding
+        cos_scores = torch.cosine_similarity(
+            torch.tensor(imput_embedding).unsqueeze(0),vault_embedding
+        )
+
+        top_k = min(top_k, len(cos_scores))
+        top_indicies = torch.topk(cos_scores,k=top_k)[1].tolist()
+        return [vault_content[idx].strip() for idx in top_indicies]
+    except Exception as e:
+        print(f"Error getting relevant context: {str(e)}")
+        return []
+    
 
 
