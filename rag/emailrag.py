@@ -43,5 +43,21 @@ def load_or_generate_embeddings(vault_content,embeddings_file,client):
         embeddings = generate_embeddings(vault_content, client)
         save_embeddings(embeddings, embeddings_file)
     return torch.tensor(embeddings)
-    
+
+
+def generate_embeddings(vault_content, client):
+    """this function generates embeddings of the vault content"""
+    print("Generatiang embeddings...")
+    embeddings = []
+    for content in vault_content:
+        if content.strip():#skip the empty files
+            try:
+                response = client.embeddings.create(
+                 model="text-embedding-ada-002", input=content   
+                )
+                embeddings.append(response.data[0].embedding)
+            except Exception as e:
+                print(f"Error in generating embeddings: {str(e)}")
+    return embeddings
+
 
