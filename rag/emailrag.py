@@ -90,5 +90,31 @@ def get_relevant_context(rewritten_input,vault_embedding,vault_content,top_k,cli
         print(f"Error getting relevant context: {str(e)}")
         return []
     
+def chat_with_gpt(user_input,system_message,vault_embeddings,vault_content,model,conversation_history,top_k,client):
+    """this function allow user to interact with the gpt model"""
+    relevant_context = get_relevant_context(user_input,vault_embeddings,vault_content,top_k,client)
+    if relevant_context:
+        context_str = "\n".join(relevant_context)
+        print("Context pulled from documents: \n\n" + CYAN + context_str + RESET_COLOR)
+    else:
+        print("No relevant context found.")
 
+    user_input_with_context = user_input
+    if relevant_context:
+        user_input_with_context = f"Context:\n{context_str}\n\nQuestion: {user_input}"
 
+    conversation_history.append({"role": "user","context":user_input_with_context})
+    messages = [{"role":"system","context":system_message},*conversation_history]
+    try:
+        response = client.chat.completions.create(
+            model=model, messages=messages,temperature=0.7,max_tokens=1000
+        )
+        conversation_history.append(
+            {"role":"assistant","content":response.choices[0].messages.content}
+        )
+        return response.choices[0].message.content
+    except Exception as e:
+        print(f"Error in chat completion: {str(e)}")
+        return "An error occured while processing your request."
+    
+def main()
