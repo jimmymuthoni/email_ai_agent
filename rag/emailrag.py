@@ -168,3 +168,6 @@ def main():
             print(NEON_GREEN + "Response: \n\n" + response + RESET_COLOR)
         except Exception as e:
             print(f"An error occured: {str(e)}")
+
+if __name__ == "__main__":
+    main()
