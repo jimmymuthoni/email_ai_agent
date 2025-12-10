@@ -7,6 +7,7 @@ import yaml
 from dotenv import load_dotenv
 from utils.config_loader import load_config
 
+
 # ANSI escape codes for colors
 PINK = "\033[95m"
 CYAN = "\033[96m"
@@ -117,4 +118,53 @@ def chat_with_gpt(user_input,system_message,vault_embeddings,vault_content,model
         print(f"Error in chat completion: {str(e)}")
         return "An error occured while processing your request."
     
-def main()
+def main():
+    """this is the enrty point of the excetion starts here"""
+    parser = argparse.ArgumentParser(description="Email RAG System")
+    parser.add_argument( "--config", default="config/config.yml", help="Path to the configuration file")
+    parser.add_argument("--clear-cache",action="store_true",help="clear the embeddings cache")
+    parser.add_argument("--model",default="gpt-3.5-turbo",help="OpenAI model to use")
+    args = parser.parse_args()
+    config = load_config(args.config)
+
+    if args.clear_cache and os.path.exists(config['embeddings_file']):
+        print(f"Clearing embeddings cache at '{config['embeddings_file']}'...")
+        os.remove(config['embeddings_file'])
+    
+    if args.model:
+        config["openai"]["model"] =- args.model 
+
+    #initialize openai client
+    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+    vault_content = []
+    if os.path.exists(config["vault.txt"]):
+        print(f"Loading content from vault '{config['vault.txt']}'...")
+        with open(config["vault_file"], 'r', encoding="utf-8") as vault_file:
+            vault_content = vault_file.readlines()
+    
+    vault_embeddings_tensor = load_or_generate_embeddings(vault_content,config['embeddings_file'],client)
+    conversation_history = []
+    system_message = config["system_message"]
+    print(PINK + "\nWelcome to the Email RAG System!" + RESET_COLOR)
+    print(CYAN + "Type 'quit' to exit the chat." + RESET_COLOR)
+
+    while True:
+        user_input = input(YELLOW + "\nAsk a question about your emails: " + RESET_COLOR)
+        if user_input.lower() == "quit":
+            break
+
+        try:
+            response = chat_with_gpt(
+                user_input,
+                system_message,
+                vault_embeddings_tensor,
+                vault_content,
+                config['openai']['model'],
+                conversation_history,
+                config['top_k'],
+                client
+            )
+            print(NEON_GREEN + "Response: \n\n" + response + RESET_COLOR)
+        except Exception as e:
+            print(f"An error occured: {str(e)}")
