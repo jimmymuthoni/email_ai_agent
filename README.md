@@ -7,7 +7,7 @@ A simple retrieval augmented generation (RAG) system that lets you collect email
 1. **Clone the Repository**
 
    ```bash
-   git clone https://github.com/ayush-that/email-ai-agent
+   git clone https://github.com/jimmymuthoni/email-ai-agent
    cd email-ai-agent
    ```
 
@@ -34,6 +34,7 @@ A simple retrieval augmented generation (RAG) system that lets you collect email
    - **Collect Emails**:  
      Run the email collection script to fetch and process your Gmail emails:
      ```bash
+     cd email_collector
      python collect_emails.py
      python collect_emails.py --keyword "search_term"
      python collect_emails.py --startdate "01.01.2022" --enddate "31.01.2022"
