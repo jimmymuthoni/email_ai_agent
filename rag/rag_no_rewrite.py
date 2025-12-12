@@ -76,3 +76,15 @@ vault_content = []
 if os.path.exists("vault.txt"):
     with open("vault.txt", "r", encoding="utf-8") as vault_file:
         vault_content = vault_file.readlines()
+
+#geberating embeddings and converting them to tensors
+print("Generating embeddings for vault content...")
+vault_embeddings = []
+for content in vault_content:
+    if content.strip():
+        response = client.embeddings.create(model="text-embedding-ada-002",input=content)
+        vault_embeddings.append(response.data[0].embedding)
+
+vault_embeddings_tensor = torch.tensor(vault_embeddings)
+print("Embeddings generated successfully")
+
