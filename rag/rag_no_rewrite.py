@@ -59,3 +59,13 @@ def chat_with_gpt(user_input,system_message,vault_embeddings,vault_content,model
         {"role":"assistant","content":response.choices[0].message.content}
     )
     return response.choices[0].message.content
+
+#parse command-line
+parser = argparse.ArgumentParser(description="ChatGPT RAG System")
+parser.add_argument(
+    "--model",
+    default="gpt-3.5-turbo",
+    help = "Openai model to use (default: gpt-3.5-turbo)"
+)
+args = parser.parse_args()
+
