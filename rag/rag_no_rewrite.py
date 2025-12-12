@@ -88,3 +88,32 @@ for content in vault_content:
 vault_embeddings_tensor = torch.tensor(vault_embeddings)
 print("Embeddings generated successfully")
 
+
+#converstion loop
+conversation_history = []
+system_message = "You are a helpful assistant that is an expert at extracting the most useful information from a given text"
+
+
+print(PINK + "\nWelcome to the RAG Chat System!" + RESET_COLOR)
+print(CYAN + "Type 'quit' to exit the chat." + RESET_COLOR)
+
+while True:
+        user_input = input(YELLOW + "\nAsk a question about your documents: " + RESET_COLOR)
+        if user_input.lower() == "quit":
+            break
+
+        try:
+            response = chat_with_gpt(
+                user_input,
+                system_message,
+                vault_embeddings_tensor,
+                vault_content,
+                args.model,
+                conversation_history,
+                client,
+            )
+            print(NEON_GREEN + "\nResponse: \n\n" + response + RESET_COLOR)
+        except Exception as e:
+            print(f"An error occurred: {str(e)}")
+
+
