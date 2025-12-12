@@ -36,3 +36,26 @@ def get_revelant_context(rewtitten_input,vault_embeddings,vault_content,client,t
     return relevant_context
 
 
+def chat_with_gpt(user_input,system_message,vault_embeddings,vault_content,model,converstion_history,client):
+    """function to interact with OpenAI model"""
+    relevant_context = get_revelant_context(user_input,vault_embeddings_tensor,vault_content,client,top_k=3)
+    if relevant_context:
+        context_str = "\n".join(relevant_context)
+        print("Context pulled from documents: \n\n" + CYAN + context_str + RESET_COLOR)
+    else:
+        print(CYAN + "No relevant context found." + RESET_COLOR)
+
+    user_input_with_context = user_input
+    if relevant_context:
+        user_input_with_context = f"Context:\n{context_str}\n\nQuestion: {user_input}"
+
+    #append user input to the convertion history
+    converstion_history.append({"role":"user","content": user_input_with_context})
+    messages = [{"role":"system","context":user_input_with_context}]
+    response = client.chat.completions.create(
+        model = model,messages=messages,temperature = 0.7,max_tokens = 1000
+    )
+    converstion_history.append(
+        {"role":"assistant","content":response.choices[0].message.content}
+    )
+    return response.choices[0].message.content
