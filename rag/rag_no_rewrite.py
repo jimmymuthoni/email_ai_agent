@@ -69,3 +69,10 @@ parser.add_argument(
 )
 args = parser.parse_args()
 
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+#load the vault content
+vault_content = []
+if os.path.exists("vault.txt"):
+    with open("vault.txt", "r", encoding="utf-8") as vault_file:
+        vault_content = vault_file.readlines()
